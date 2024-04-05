@@ -5,6 +5,9 @@ from llama_index.core.agent import ReActAgent
 import importer_csv
 import indexing
 from prompts import klarna
+from dotenv import load_dotenv
+
+load_dotenv("./.env")
 
 llm = OpenAI(model="gpt-3.5-turbo")
 llm = OpenAI(model="gpt-4-1106-preview")
@@ -47,6 +50,7 @@ query_engine_tools = [
 agent = ReActAgent.from_tools(
     query_engine_tools,
     llm=llm,
+    verbose = True
 )
 
 personas = importer_csv.get_rows()
