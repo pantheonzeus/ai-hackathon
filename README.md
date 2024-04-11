@@ -38,17 +38,17 @@ git clone https://github.com/pantheonzeus/ai-hackathon.git
 For running the app locally:
 1. Create a virtual environment and activate it:
     ```bash
-    python -m venv venv
+    python -m venv .venv
     source .venv/bin/activate
     ```
 
-2. Ensure you have pip and dependencies installed   
+2. Ensure you have pip and dependencies installed
     ```bash
     python -m pip install --upgrade pip
     pip install -r requirements.txt
     ```
 
-3. Copy the `sample_<your_os>.env` into `.env`, and fill in your OPENAI_KEY. 
+3. Copy the `sample.env` into `.env`, and fill in your `OPENAI_API_KEY`.
 
 4. Run the app only:
 ```bash

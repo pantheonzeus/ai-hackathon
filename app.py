@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from llama_index.llms.openai import OpenAI
 from llama_index.core.tools import QueryEngineTool, ToolMetadata
 from llama_index.core.agent import ReActAgent
@@ -11,8 +12,7 @@ import importer_csv
 import indexing
 from prompts import klarna
 
-# from dotenv import load_dotenv
-# load_dotenv("./.env")
+load_dotenv()
 
 # Define LLM
 # llm = OpenAI(model="gpt-3.5-turbo")
