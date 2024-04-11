@@ -16,7 +16,12 @@ The data is first generated/scraped and indexed, afterwards the llama index agen
 * agents to find best fitting customer segment and FAQ to customer issues
 
 ## Project structure
-* app.py: end2end flow
+* app.py main function going through steps:
+    * crawl data source
+    * index data
+    * create query engine tools for indexes
+    * create an agents for the query engine tools and an LLM tool
+    * run on sample customer query
 * data folder contains the customer segemnt of klarna - created with ChatGPT
 * prompts is a folder to store a basic user prompts
 
@@ -45,15 +50,8 @@ For running the app locally:
 
 3. Copy the `sample_<your_os>.env` into `.env`, and fill in your OPENAI_KEY. 
 
-4. Run the Streamlit app locally:
-   ```bash
-   streamlit run stramlit_app.py
-   ```
-OR
-Run the backend app only:
+4. Run the app only:
 ```bash
-   run app.py
+   python app.py
    ```
-
-## Indexing
 

@@ -8,7 +8,7 @@ financial situation mention. It should make the person feel good and not judged 
 """
 
 BASIC_CUSTOMER_PROMPT_PLANNER = """You get customer questions. 
-1. You decode their customer segmen based on the personal data they shared. 
+1. You decode their customer segment based on the personal data they shared. 
 2. Then you take the provided probelem with the Klarna services and give and solution. 
 3. Then you answer per Email in the preferend tone of voice of this specific cutomer segment.
 
