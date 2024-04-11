@@ -1,21 +1,27 @@
 from llama_index.llms.openai import OpenAI
 from llama_index.core.tools import QueryEngineTool, ToolMetadata
 from llama_index.core.agent import ReActAgent
+from llama_index.agent.openai import OpenAIAgent
+from llama_index.core.tools import QueryPlanTool
+from llama_index.core import get_response_synthesizer
+from llama_index.core.query_pipeline import QueryPipeline
+from llama_index.core import PromptTemplate
 
 import importer_csv
 import indexing
 from prompts import klarna
 
 # from dotenv import load_dotenv
-
 # load_dotenv("./.env")
 
-llm = OpenAI(model="gpt-3.5-turbo")
+# Define LLM
+# llm = OpenAI(model="gpt-3.5-turbo")
 llm = OpenAI(model="gpt-4-1106-preview")
 
-klarna_faq_index = indexing.indexing(
-    ["https://www.klarna.com/us/customer-service/"], "./storage/klarna"
-)
+
+# ReAct - https://docs.llamaindex.ai/en/stable/examples/agent/react_agent_with_query_engine/#react-agent-with-query-engine-rag-tools
+# Indexing of knowledge - in this case Klarna website (us customer service) and a ChatGPT created customer segmentation
+klarna_faq_index = indexing.indexing(["./klarna.txt"], "./storage/klarna")
 klarna_customer_segment_index = indexing.indexing(
     ["./data/klarna_customer_segments.csv"], "./storage/klarna_customer_segment"
 )
@@ -25,6 +31,7 @@ klarna_customer_segment_engine = klarna_customer_segment_index.as_query_engine(
     similarity_top_k=3
 )
 
+# Query Engine List
 query_engine_tools = [
     QueryEngineTool(
         query_engine=klarna_faq_engine,
@@ -50,9 +57,9 @@ query_engine_tools = [
 
 agent = ReActAgent.from_tools(query_engine_tools, llm=llm, verbose=True)
 
+# Demo Call with one persona
 personas = importer_csv.get_rows()
 persona = personas[1]
-
 response = agent.chat(
     klarna.BASIC_CUSTOMER_PROMPT.format(
         persona[0],
@@ -66,11 +73,7 @@ response = agent.chat(
 )
 print(str(response))
 
-
-from llama_index.core.query_pipeline import QueryPipeline
-from llama_index.core import PromptTemplate
-
-
+# Building a workflow example - https://docs.llamaindex.ai/en/stable/examples/pipeline/query_pipeline/
 prompt_tmpl_1 = PromptTemplate(
     klarna.BASIC_CUSTOMER_PROMPT.format(
         persona[0],
@@ -86,20 +89,14 @@ prompt_tmpl_2 = PromptTemplate(
     "Take this content {text} and do not change the content, tone of voice. Adapt it for this output channel : EMAIL"
 )
 llm_c = llm.as_query_component(streaming=True)
+
 p = QueryPipeline(chain=[prompt_tmpl_1, llm_c, prompt_tmpl_2, llm_c], verbose=True)
 output = p.run()
 for o in output:
     print(o.delta, end="")
 
-
-query_engine_tools
-from llama_index.agent.openai import OpenAIAgent
-from llama_index.core.tools import QueryPlanTool
-from llama_index.core import get_response_synthesizer
-
+# Building a workflow example 2 - https://docs.llamaindex.ai/en/stable/examples/agent/openai_agent_query_plan/
 response_synthesizer = get_response_synthesizer()
-
-
 query_tool_klarna_customer_service = QueryEngineTool.from_defaults(
     query_engine=klarna_customer_segment_engine,
     name="klarna_faq",
